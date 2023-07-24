@@ -12,39 +12,57 @@ import (
 var qrCode = app.NewQRCode()
 var location1 app.Location
 var location2 app.Location
+var location3 app.Location
 
-func TestCreateQR(t *testing.T) {
+func init() {
 	location1 = app.Location{
 		Path:        uuid.NewString(),
 		Address:     "Av Calle 2",
 		Description: "En el 2do piso del edificio",
 	}
-	location1 = app.Location{
+	location2 = app.Location{
 		Path:        uuid.NewString(),
 		Address:     "Av Calle 3",
 		Description: "En el baño del bar chelero",
+	}
+	location3 = app.Location{
+		Address:     "Av Las Perdices 3333",
+		Description: "Cafetería estación de buses",
+		Path:        uuid.NewString(),
 	}
 	qrCode = &app.QRCode{
 		URL:       "https://google.com",
 		CreatedAt: time.Now(),
 		Locations: []app.Location{location1, location2},
 	}
+}
+
+func TestCreateQR(t *testing.T) {
+	var expected = "https://google.com"
+	var got app.QRCode
 	var err = app.CreateQR(qrCode)
-	if err != nil {
+	var ok bool
+
+	if got, ok = app.QrCodes[qrCode.URL]; !ok {
 		t.Errorf("error creating qr: %s", err.Error())
-	}
-	if qrCode.URL != "https://google.com" {
-		t.Errorf("error creating qr: verify URL")
 	} else {
-		fmt.Print("[OK] QR Code created successfully!\n")
+		if got.URL != expected {
+			t.Errorf("error creating qr: verify URL")
+		} else {
+			fmt.Print("[OK] QR Code created successfully!\n")
+		}
 	}
 }
 
 func TestIncrementViews(t *testing.T) {
 	var expected = 1
+	var got = 0
+
 	location1.IncrementView()
-	if location1.Analytics.Views != expected {
-		t.Errorf("[ERROR] expected %d got %d", expected, location1.Analytics.Views)
+	got = location1.Analytics.Views
+
+	if got != expected {
+		t.Errorf("[ERROR] expected %d got %d", expected, got)
 	} else {
 		fmt.Print("[OK] incremented +1 View\n")
 	}
@@ -52,13 +70,9 @@ func TestIncrementViews(t *testing.T) {
 
 func TestAddLocation(t *testing.T) {
 	var err error
-	var newLocation = app.Location{
-		Address:     "Av Siempre Viva 1234",
-		Description: "El bar de la esquina, frente a la entrada principal",
-		Path:        uuid.NewString(),
-	}
 	var expected = 3
-	err = qrCode.AddLocation(newLocation)
+	err = qrCode.AddLocation(location3)
+
 	if err != nil {
 		t.Errorf("error adding location: %s", err.Error())
 	} else {
