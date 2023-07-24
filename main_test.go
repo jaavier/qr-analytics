@@ -27,7 +27,7 @@ func TestCreateQR(t *testing.T) {
 	qrCode = &app.QRCode{
 		URL:       "https://google.com",
 		CreatedAt: time.Now(),
-		Location:  []app.Location{location1, location2},
+		Locations: []app.Location{location1, location2},
 	}
 	var err = app.CreateQR(qrCode)
 	if err != nil {

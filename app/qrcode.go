@@ -9,20 +9,20 @@ import (
 type QRCode struct {
 	URL       string     `json:"url"`
 	CreatedAt time.Time  `json:"created_at"`
-	Location  []Location `json:"location"`
+	Locations []Location `json:"location"`
 }
 
 var QrCodes = make(map[string]QRCode)
 
 func (qc *QRCode) RetrieveLocations() []Location {
-	return qc.Location
+	return qc.Locations
 }
 
 func (qc *QRCode) AddLocation(location Location) error {
 	if reflect.DeepEqual(Location{}, location) {
 		return fmt.Errorf("you cannot add location empty")
 	}
-	qc.Location = append(qc.Location, location)
+	qc.Locations = append(qc.Locations, location)
 	return nil
 }
 
