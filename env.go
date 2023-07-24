@@ -7,20 +7,27 @@ import (
 )
 
 func LoadEnv(path ...string) error {
-	var finalPath string
+	var finalPath, fileContent string
+	var err error
+
 	if len(path) == 0 {
 		finalPath = "./.env"
 	} else {
 		finalPath = path[0]
 	}
-	fileContent, err := readFile(finalPath)
+
+	fileContent, err = readFile(finalPath)
 	if err != nil {
+		fmt.Printf("Error reading file: %s\n", err.Error())
 		return err
 	}
+
 	err = DefineEnv(fileContent)
 	if err != nil {
+		fmt.Printf("Error injecting environment variables: %s\n", err.Error())
 		return err
 	}
+
 	return nil
 }
 
@@ -29,12 +36,14 @@ func DefineEnv(content string) error {
 	if len(byLines) == 0 {
 		return fmt.Errorf("cannot define environment variables")
 	}
+
 	for _, line := range byLines {
 		var splitLine []string = strings.Split(line, "=")
 		var name string = splitLine[0]
 		var value string = strings.Join(splitLine[1:], "")
 		os.Setenv(name, value)
 	}
+
 	return nil
 }
 
@@ -43,5 +52,6 @@ func readFile(path string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error reading %s", path)
 	}
+
 	return string(content), nil
 }
