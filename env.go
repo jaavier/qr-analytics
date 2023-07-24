@@ -18,13 +18,13 @@ func LoadEnv(path ...string) error {
 
 	fileContent, err = readFile(finalPath)
 	if err != nil {
-		fmt.Printf("Error reading file: %s\n", err.Error())
+		// fmt.Printf("Error reading file: %s\n", err.Error())
 		return err
 	}
 
 	err = DefineEnv(fileContent)
 	if err != nil {
-		fmt.Printf("Error injecting environment variables: %s\n", err.Error())
+		// fmt.Printf("Error injecting environment variables: %s\n", err.Error())
 		return err
 	}
 
