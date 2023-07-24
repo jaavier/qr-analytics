@@ -40,14 +40,19 @@ func init() {
 func TestCreateQR(t *testing.T) {
 	var expected = "https://google.com"
 	var got app.QRCode
-	var err = app.CreateQR(qrCode)
+	var err error
 	var ok bool
 
+	err = app.CreateQR(qrCode)
+	if err != nil {
+		t.Errorf("expected %s got %+v. Error: %s", expected, got, err.Error())
+	}
+
 	if got, ok = app.QrCodes[qrCode.URL]; !ok {
-		t.Errorf("error creating qr: %s", err.Error())
+		t.Errorf("expected %s got %s", expected, got.URL)
 	} else {
 		if got.URL != expected {
-			t.Errorf("error creating qr: verify URL")
+			t.Errorf("error creating QR Code: expected %s got %s got", expected, got.URL)
 		} else {
 			fmt.Print("[OK] QR Code created successfully!\n")
 		}
