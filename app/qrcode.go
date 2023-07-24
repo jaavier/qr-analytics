@@ -10,6 +10,7 @@ type QRCode struct {
 	URL       string     `json:"url"`
 	CreatedAt time.Time  `json:"created_at"`
 	Locations []Location `json:"location"`
+	Id        string     `json:"qrId"`
 }
 
 var QrCodes = make(map[string]QRCode)
@@ -30,7 +31,7 @@ func CreateQR(qr *QRCode) error {
 	if reflect.DeepEqual(QRCode{}, qr) {
 		return fmt.Errorf("error: qr incorrect")
 	} else {
-		QrCodes[(*qr).URL] = *qr
+		QrCodes[(*qr).Id] = *qr
 	}
 	return nil
 }
